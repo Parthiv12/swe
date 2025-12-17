@@ -1,0 +1,18 @@
+@startuml
+skinparam monochrome true
+actor User
+boundary App
+control GPSService
+control RouteCalculator
+entity Map
+
+loop every 1-2s
+  GPSService -> App: onLocationUpdate(currentLocation)
+  App -> App: check on-path?
+  alt off-path beyond threshold
+    App -> RouteCalculator: reroute(Map, currentLocation, dest, prefs)
+    RouteCalculator --> App: new Path
+    App --> User: update route + notify reroute
+  end
+end
+@enduml

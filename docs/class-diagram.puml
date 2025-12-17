@@ -1,0 +1,81 @@
+@startuml
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+class User {
+  id: string
+  currentLocation: (lat,lng)
+  preferences: { accessibility: bool, units: "mi|km" }
+  favorites: FavoritesList
+}
+
+class FavoritesList {
+  items: List<Destination>
+  +add(d: Destination)
+  +remove(d: Destination)
+  +list(): List<Destination>
+}
+
+class Building {
+  id: string
+  name: string
+  type: string
+  coordinate: (lat,lng)
+  departments: List<string>
+  accessibleEntrances: List<(lat,lng)>
+}
+
+class Map {
+  buildings: List<Building>
+  paths: List<Path>
+  landmarks: List<string>
+}
+
+class Destination {
+  buildingId: string
+  displayName: string
+}
+
+class SearchEngine {
+  +search(query: string): List<Destination>
+}
+
+class RouteCalculator {
+  +computeRoute(map: Map, origin: (lat,lng), dest: Destination, prefs): Path
+  +reroute(map: Map, current: (lat,lng), dest: Destination, prefs): Path
+}
+
+class GPSService {
+  +start()
+  +stop()
+  +onLocationUpdate(cb)
+}
+
+class Path {
+  id: string
+  points: List<(lat,lng)>
+  distance: number
+  duration: number
+  instructions: List<NavigationInstruction>
+}
+
+class NavigationInstruction {
+  index: int
+  text: string
+  maneuverType: string
+  coordinate: (lat,lng)
+}
+
+User *-- FavoritesList
+Map o-- "*" Building
+Map o-- "*" Path
+Destination --> Building
+User ..> SearchEngine
+User ..> RouteCalculator
+User ..> GPSService
+SearchEngine ..> Destination
+RouteCalculator ..> Map
+RouteCalculator ..> Path
+RouteCalculator ..> GPSService
+Path *-- "*" NavigationInstruction
+@enduml

@@ -1,0 +1,16 @@
+@startuml
+skinparam monochrome true
+actor User
+boundary App
+control SearchEngine
+control RouteCalculator
+entity Map
+
+User -> App: type destination query
+App -> SearchEngine: search(query)
+SearchEngine --> App: destinations[]
+User -> App: select destination
+App -> RouteCalculator: computeRoute(Map, origin=GPS, dest, prefs)
+RouteCalculator --> App: Path (points + instructions)
+App --> User: show route + start navigation
+@enduml

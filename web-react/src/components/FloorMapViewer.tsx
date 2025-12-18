@@ -1,56 +1,49 @@
 /**
- * FloorMapViewer Component - PDF Floor Map Display
+ * FloorMapViewer Component - Image Floor Map Display
  * 
- * Displays building floor maps from PDF files with page navigation
- * Falls back to demo view if PDF not available
+ * Displays building floor maps from PNG images with simple navigation.
+ * Place images under the provided directory, e.g. /floormaps/sh/1.png ... 5.png
  */
 
-import { useState, useEffect } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
-import DemoFloorMap from './DemoFloorMap';
-
-// Setup PDF.js worker - use local worker from node_modules
-if (typeof window !== 'undefined' && !pdfjs.GlobalWorkerOptions.workerSrc) {
-  try {
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-      'pdfjs-dist/build/pdf.worker.min.mjs',
-      import.meta.url,
-    ).toString();
-  } catch (e) {
-    console.warn('Could not load PDF worker, will use demo mode:', e);
-  }
-}
+import { useMemo, useState } from 'react';
+// Static imports for Science Hall floor maps (src/assets/floormaps/sh)
+// Note: file names are mixed-case per user: Sh1.png, sh2.png ... sh5.png
+// Vite will resolve these to URLs at build/dev time.
+import Sh1 from '../assets/floormaps/sh/Sh1.png';
+import sh2 from '../assets/floormaps/sh/sh2.png';
+import sh3 from '../assets/floormaps/sh/sh3.png';
+import sh4 from '../assets/floormaps/sh/sh4.png';
+import sh5 from '../assets/floormaps/sh/sh5.png';
 
 interface Props {
   buildingName: string;
-  pdfPath: string;
+  pdfPath: string; // Directory containing PNGs, e.g. /floormaps/sh
   onClose: () => void;
 }
 
 export default function FloorMapViewer({ buildingName, pdfPath, onClose }: Props) {
-  const [numPages, setNumPages] = useState<number>(0);
+  // Load all PNGs from src/assets/floormaps/sh using Vite glob
+  const imageMap = useMemo(() => (
+    [
+      { floor: 1, url: Sh1, name: 'Sh1.png' },
+      { floor: 2, url: sh2, name: 'sh2.png' },
+      { floor: 3, url: sh3, name: 'sh3.png' },
+      { floor: 4, url: sh4, name: 'sh4.png' },
+      { floor: 5, url: sh5, name: 'sh5.png' },
+    ]
+  ), []);
+
+  const TOTAL_FLOORS = imageMap.length || 5; // default to 5 if not found
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const [error, setError] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    setNumPages(numPages);
-    setPageNumber(1);
-    setError(false);
-    setLoading(false);
-  }
-
-  function onDocumentError(error: any) {
-    console.error('PDF load error:', error);
-    setError(true);
-    setLoading(false);
-  }
+  const [loadError, setLoadError] = useState<boolean>(imageMap.length === 0);
 
   function changePage(offset: number) {
-    setPageNumber((prev) => Math.max(1, Math.min(prev + offset, numPages)));
+    setPageNumber((prev) => Math.max(1, Math.min(prev + offset, TOTAL_FLOORS)));
+    setLoadError(false);
   }
+
+  const currentEntry = imageMap.find(e => e.floor === pageNumber) || imageMap[pageNumber - 1];
+  const currentSrc = currentEntry?.url;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -60,40 +53,31 @@ export default function FloorMapViewer({ buildingName, pdfPath, onClose }: Props
           <button onClick={onClose} className="small">✕ Close</button>
         </div>
         <div className="modal-body">
-          {error ? (
-            // Fallback: Show demo floor map when PDF fails
-            <DemoFloorMap buildingName={buildingName} floorNumber={pageNumber} totalFloors={numPages || 4} onClose={onClose} />
-          ) : (
-            // Try to load PDF
-            <>
-              <div className="pdf-controls">
-                <button onClick={() => changePage(-1)} disabled={pageNumber <= 1} className="small">
-                  ← Prev
-                </button>
-                <span className="text-muted text-sm">
-                  Floor {pageNumber} of {numPages}
-                </span>
-                <button onClick={() => changePage(1)} disabled={pageNumber >= numPages} className="small">
-                  Next →
-                </button>
+          <div className="pdf-controls">
+            <button onClick={() => changePage(-1)} disabled={pageNumber <= 1} className="small">
+              ← Prev
+            </button>
+            <span className="text-muted text-sm">Floor {pageNumber} of {TOTAL_FLOORS}</span>
+            <button onClick={() => changePage(1)} disabled={pageNumber >= TOTAL_FLOORS} className="small">
+              Next →
+            </button>
+          </div>
+
+          <div className="pdf-page">
+            {!loadError && currentSrc ? (
+              <img 
+                src={currentSrc}
+                alt={`${buildingName} Floor ${pageNumber}`}
+                width={800}
+                style={{ borderRadius: 8, border: '1px solid rgba(79,70,229,0.2)' }}
+              />
+            ) : (
+              <div className="error">
+                Floor map images not found.
+                Place files at src/assets/floormaps/sh/ (e.g., Sh1.png, sh2.png ... sh5.png).
               </div>
-              <div className="pdf-page">
-                <Document
-                  file={pdfPath}
-                  onLoadSuccess={onDocumentLoadSuccess}
-                  onError={onDocumentError}
-                  loading={<div className="text-muted p-5">Loading floor maps...</div>}
-                >
-                  <Page 
-                    pageNumber={pageNumber} 
-                    width={800}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                  />
-                </Document>
-              </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

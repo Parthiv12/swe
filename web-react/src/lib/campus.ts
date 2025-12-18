@@ -1,33 +1,34 @@
 import { Amenity, Announcement, Building, Comment, Edge, Event, LatLng, Professor, Room } from './graph';
+import markerImg from '../assets/marker.png';
 
 export const Campus: { center: LatLng; buildings: Building[]; edges: Edge[]; amenities: Amenity[]; closures: Edge[]; rooms: Room[]; professors: Professor[]; events: Event[]; announcements: Announcement[]; initialComments: Comment[] } = (() => {
   // Center near Wayne State University, Detroit
   const center = { lat: 42.3591, lng: -83.0664 };
   const buildings = [
-    { id: 'ENG', name: 'Engineering Hall', lat: 42.3598, lng: -83.0675, departments: ['ECE', 'CSE'], imageUrl: 'https://picsum.photos/seed/ENG/400/240', rating: 4.5, reviews: [
-      { author: 'Akhila', rating: 5, text: 'Great labs and helpful staff.' },
+    { id: 'ENG', name: 'Engineering Hall', lat: 42.3598, lng: -83.0675, departments: ['ECE', 'CSE'], imageUrl: markerImg, rating: 4.5, reviews: [
+      { author: 'Jason Myers', rating: 5, text: 'Great labs and helpful staff.' },
       { author: 'Parthiv', rating: 4, text: 'Wi-Fi can be spotty during peak times.' },
     ] },
-    { id: 'LIB', name: 'Main Library', lat: 42.3579, lng: -83.0652, departments: ['Library'], imageUrl: 'https://picsum.photos/seed/LIB/400/240', rating: 4.6, reviews: [
+    { id: 'LIB', name: 'Main Library', lat: 42.3579, lng: -83.0652, departments: ['Library'], imageUrl: markerImg, rating: 4.6, reviews: [
       { author: 'Abhi', rating: 5, text: 'Quiet study spaces and good coffee.' },
       { author: 'Vish', rating: 4, text: 'Print queue gets busy near finals.' },
     ] },
-    { id: 'SCI', name: 'Science Hall', lat: 42.356361, lng: -83.0670333, departments: ['Physics', 'Chemistry', 'Biology'], imageUrl: 'https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=400&h=240&fit=crop', rating: 4.6, reviews: [
+    { id: 'SCI', name: 'Science Hall', lat: 42.356361, lng: -83.0670333, departments: ['Physics', 'Chemistry', 'Biology'], imageUrl: markerImg, rating: 4.6, reviews: [
       { author: 'Sugi', rating: 5, text: 'Amazing lecture halls and state-of-the-art labs. Perfect for physics experiments!' },
       { author: 'Aaraiz', rating: 5, text: 'Chemistry equipment is top-tier. Very organized and clean facilities.' },
       { author: 'Professor Anderson', rating: 5, text: 'Excellent research space and collaborative environment.' },
       { author: 'Zara P.', rating: 4, text: 'Great natural lighting in the classrooms. A bit crowded during midterms though.' },
-    ], floorMapPath: '/assets/floormaps/science-hall.pdf' },
-    { id: 'BUS', name: 'Business School', lat: 42.3572, lng: -83.0689, departments: ['MBA'], imageUrl: 'https://picsum.photos/seed/BUS/400/240', rating: 4.1, reviews: [
+    ], floorMapPath: '/floormaps/sh' },
+    { id: 'BUS', name: 'Business School', lat: 42.3572, lng: -83.0689, departments: ['MBA'], imageUrl: markerImg, rating: 4.1, reviews: [
       { author: 'Lena', rating: 4, text: 'Modern classrooms and good networking events.' },
     ] },
-    { id: 'ART', name: 'Arts Building', lat: 42.3612, lng: -83.0660, departments: ['Design'], imageUrl: 'https://picsum.photos/seed/ART/400/240', rating: 4.4, reviews: [
+    { id: 'ART', name: 'Arts Building', lat: 42.3612, lng: -83.0660, departments: ['Design'], imageUrl: markerImg, rating: 4.4, reviews: [
       { author: 'Sam', rating: 5, text: 'Creative spaces and great lighting.' },
     ] },
-    { id: 'GYM', name: 'Recreation Center', lat: 42.3585, lng: -83.0698, departments: ['Rec'], imageUrl: 'https://picsum.photos/seed/GYM/400/240', rating: 4.7, reviews: [
+    { id: 'GYM', name: 'Recreation Center', lat: 42.3585, lng: -83.0698, departments: ['Rec'], imageUrl: markerImg, rating: 4.7, reviews: [
       { author: 'Dana', rating: 5, text: 'Clean facilities and friendly staff.' },
     ] },
-    { id: 'ATEC', name: 'Advanced Technology Education Center', lat: 42.509218, lng: -82.974034, departments: ['Advanced Tech', 'Software', 'Engineering'], imageUrl: 'https://picsum.photos/seed/ATEC/400/240', rating: 4.3, reviews: [
+    { id: 'ATEC', name: 'Advanced Technology Education Center', lat: 42.509218, lng: -82.974034, departments: ['Advanced Tech', 'Software', 'Engineering'], imageUrl: markerImg, rating: 4.3, reviews: [
       { author: 'Local Student', rating: 4, text: 'Plenty of parking near Lot 4.' },
       { author: 'Visitor', rating: 5, text: 'Auditorium is excellent for seminars.' },
     ] },

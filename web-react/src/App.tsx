@@ -163,6 +163,11 @@ export default function App() {
         const { latitude, longitude } = pos.coords;
         setUserLoc({ lat: latitude, lng: longitude });
         setFromId('CURRENT');
+        // Force route recalculation with new user location
+        if (selectedBuilding) {
+          const r = computeRoute({ originCoord: { lat: latitude, lng: longitude }, destId: selectedBuilding.id, accessibility, closed: activeClosures });
+          if (r) setRoute(r);
+        }
       },
       () => alert('Unable to retrieve your location'),
       { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }

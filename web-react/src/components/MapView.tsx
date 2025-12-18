@@ -23,13 +23,15 @@ import { useEffect, useRef } from 'react';
 import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Amenity, Building, LatLng, Path } from '../lib/graph';
+import markerPng from '../assets/marker.png';
 
-// Fix default icon URLs for Leaflet in bundlers (Vite-specific asset handling)
-let DefaultIcon = L.icon({ 
-  iconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAApCAYAAADAk4LOAAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAV50Ry1GREWEgCc1AAAACXBIWXMAAA7DAAAOwwHHb6hkAAACWUlEQVRYCe2XQWoUQRCGa7t1BiOe7JLEV7jkIIKieNmDB0Gw0YsHb+LFkyePogfxZBEPCp7Ei0QP4kUTeEVx8aI5qBD/VEsz29PT001N94xV3/RP1VSn6+vq6p7pAQCAxes8m81mqVRqNbMdxzEul8tdSZKw1+ul2Wym+Xy+JkkSjkarlaZpuN1uKZFIUKvVomq1KvmASi6Xo7W1NcrlcjQYDCiVSklCoZA0HA6p1WqRKIoUh8OhL5PJ0Pf3N3m9XqpUKpRIJKTjn8/n4na7xTxPp1NSqRRVKhWp/+PjIz0/P9P39zel0+mFJq1Wi9bW1uQ4QZ+fnxQKhaRBqrKAsiwLBPWaVnG/XqfJZCJpUJVQKPTvJfJarUZer5eGwyHt7u7S/v4+PXx80N7eHgHwqbczFo2jKArFYjEqFApUr9dJlmVRi4v4fD5qNBpULBbp4eGB7u7u6Pb2VnSILGhDQwNFo1Fa9N8xvV6n5eVlqtVq4qD/gOklTU0NvzpBr9ej+8eHf+d4PCxO0M29mIFyb96ubm5ofn4+9t1Yrv/8/KSzszPa3Nyk3d1dymQyj24a9dz6R1zfOO45bpoAVLUV2HqXrPvG9dXVLVztXlBFwWQyeXR2c3PDR0dH4gg4vjL8zPMN4i1jYWEhVYe8G/E2AJ+k6aQlbvPm5uazEKGxsfFfzB1ViqTfqI/H+jvuSf5v0oq+wv6tvmYbRJ0maMmAZfuKu3YG6ZEATGwANRqhRKhzBMUKYKzwE3eLVmhTW1+a0pf8Ib3Hj32UusFdNT0b3X8RRYFSK1l5cQ5QQkqEHLPzA9HgzcN9E7kiqZvd0XzIVU1ixB0aV00qKZF5LPXJ+lAk6mnyj5H0X/MfkLXp5UYSz7BKqQD7I/8VxkW/TXdz1yFWNJXgENVDGYUvN8KYAAAAlxBVW5OAV5Q', 
-  shadowUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAABqCAYAAACoWfH9AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAIRJREFUeJzt2DEBAQAAgxBH+M8OI0AAAAAAAAAAf/Z+FHxQV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3BXcFdwV3AHQs4DGYxUZKEAAAAASUVORK5CYII=', 
-  iconSize: [25, 41], 
-  iconAnchor: [12, 41] 
+// Custom map marker icon using provided asset
+const DefaultIcon = L.icon({
+  iconUrl: markerPng,
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -28],
+  className: 'map-marker-icon'
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 

@@ -72,7 +72,10 @@ export function computeRoute(opts: { originCoord: LatLng; destId: string; access
   if (!pathIds.length || pathIds[0] !== originNode) return null;
 
   const idToB: Record<string, Building> = Object.fromEntries(Campus.buildings.map((b: Building) => [b.id, b]));
-  const points: LatLng[] = pathIds.map((id: string) => ({ lat: idToB[id].lat, lng: idToB[id].lng }));
+  const originNodeCoord = { lat: idToB[originNode].lat, lng: idToB[originNode].lng };
+  const firstLegMeters = haversine(originCoord, originNodeCoord);
+  // Start the polyline at the real origin coordinate so the route begins at the user's true position
+  const points: LatLng[] = [originCoord, ...pathIds.map((id: string) => ({ lat: idToB[id].lat, lng: idToB[id].lng }))];
 
   const instructions: NavigationInstruction[] = [];
   const streetNames = ['West Kirby Street', 'East Kirby Street', 'Cass Avenue', 'Lothrop Street', 'Warren Avenue'];
@@ -89,7 +92,10 @@ export function computeRoute(opts: { originCoord: LatLng; destId: string; access
     });
   }
 
-  return { id: `path-${Date.now()}`, points, distance: Math.round(dist[destNode]), duration: Math.round(dist[destNode] / 1.4), instructions, nodes: pathIds };
+  const totalDistance = Math.round(dist[destNode] + firstLegMeters);
+  const totalDuration = Math.round(totalDistance / 1.4);
+
+  return { id: `path-${Date.now()}`, points, distance: totalDistance, duration: totalDuration, instructions, nodes: pathIds };
 }
 
 export function distanceToPathMeters(point: LatLng, polyline: LatLng[]) {
